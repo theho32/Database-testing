@@ -1,0 +1,37 @@
+SELECT client.client_name
+FROM client
+WHERE client.branch_id = (
+    SELECT branch.branch_id
+    FROM branch
+    WHERE branch.mgr_id = 102
+);
+
+SELECT * from branch_supplier;
+
+DELETE FROM branch
+WHERE branch_id = 2;
+
+CREATE TABLE trigger_test (
+    message VARCHAR(100)
+);
+
+DELIMITER $$ (Make sure to put this into the command prompt)
+CREATE
+    TRIGGER my_trigger2 BEFORE INSERT
+    ON employee
+    FOR EACH ROW BEGIN
+        IF NEW.sex = 'M' THEN
+            INSERT INTO trigger_test VALUES('added male employee');
+        ELSEIF NEW.sex = 'F' THEN
+            INSERT INTO trigger_test VALUES('added female');
+        ELSE
+            INSERT INTO trigger_test VALUES('added other employee');
+        END IF;
+    END $$
+DELIMITER ;
+
+INSERT INTO employee
+VALUES(111, 'Pam', 'Beesly', '1988-02-19', 'F', 69000, 106, 3);
+
+
+SELECT * FROM trigger_test;
